@@ -1,0 +1,28 @@
+UPDATED PROJECT FLOW
+Full Workflow
+1. RSS feed detects breaking news
+            ↓
+2. Webhook triggers workflow
+            ↓
+3. Planner Agent creates execution plan
+            ↓
+4. Research Agent gathers sources
+            ↓
+5. FactCheck Agent validates information
+            ↓
+6. Summary Agent extracts key insights
+            ↓
+7. Article Agent generates article
+            ↓
+8. Social Agent generates:
+      - Telegram post
+      - Reddit post
+      - Discord post
+            ↓
+9. Publishing Agent publishes content
+            ↓
+10. Workflow stored in MongoDB
+            ↓
+11. Omium traces recorded
+            ↓
+12. Frontend dashboard updated

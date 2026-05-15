@@ -1,0 +1,625 @@
+# GitHub Workflow & Branch Strategy
+
+# PulseWire AI — Autonomous AI Journalism Pipeline
+
+---
+
+# Purpose
+
+This document defines:
+
+* Git branch structure
+* Team responsibilities
+* Push strategy
+* Pull request workflow
+* Merge strategy
+* Integration order
+* Rules to avoid merge conflicts during the 24-hour hackathon
+
+The goal is to ensure:
+
+* parallel development
+* clean collaboration
+* fewer merge conflicts
+* faster integration
+* stable demo-ready code
+
+---
+
+# Repository Structure
+
+The GitHub repository should contain:
+
+```text
+pulsewire-ai/
+│
+├── frontend/
+│
+├── backend/
+│   ├── agents/
+│   ├── routes/
+│   ├── services/
+│   ├── database/
+│   ├── models/
+│   └── main.py
+│
+├── docs/
+│   ├── PRD.md
+│   ├── TRD.md
+│   ├── DESIGN.md
+│   ├── IMPLEMENTATION.md
+│   └── GITHUB_WORKFLOW.md
+│
+├── README.md
+├── requirements.txt
+└── .env.example
+```
+
+---
+
+# Branch Structure
+
+A total of 6 branches should be used.
+
+## Main Branches
+
+| Branch  | Purpose                                   |
+| ------- | ----------------------------------------- |
+| main    | Final stable demo-ready production branch |
+| develop | Main integration branch for all features  |
+
+---
+
+## Feature Branches
+
+| Branch                     | Owner    | Responsibility                            |
+| -------------------------- | -------- | ----------------------------------------- |
+| feature/frontend-dashboard | Member 1 | Frontend dashboard and UI                 |
+| feature/backend-core       | Member 2 | Backend APIs and database                 |
+| feature/ai-agents          | Member 3 | AI agents and orchestration               |
+| feature/publishing-omium   | Member 4 | Publishing integrations and Omium tracing |
+
+---
+
+# Branch Flow
+
+```text
+main
+│
+└── develop
+    ├── feature/frontend-dashboard
+    ├── feature/backend-core
+    ├── feature/ai-agents
+    └── feature/publishing-omium
+```
+
+---
+
+# Important Git Rules
+
+## NEVER push directly to:
+
+```text
+main
+develop
+```
+
+Only push to your own feature branch.
+
+---
+
+# Team Responsibilities
+
+---
+
+# MEMBER 1 — FRONTEND + DASHBOARD
+
+## Branch
+
+```bash
+feature/frontend-dashboard
+```
+
+## Responsibilities
+
+* React frontend setup
+* Tailwind CSS UI
+* Dashboard page
+* Workflow visualization
+* Publishing logs page
+* Article preview page
+* Agent activity timeline
+* API integration with backend
+
+## Folder Access
+
+Allowed to modify:
+
+```text
+frontend/
+```
+
+Should avoid modifying:
+
+```text
+backend/
+```
+
+---
+
+## Push Schedule
+
+| Time    | Push                    |
+| ------- | ----------------------- |
+| Hour 2  | React + Tailwind setup  |
+| Hour 5  | Dashboard UI            |
+| Hour 8  | Workflow pages          |
+| Hour 14 | Backend API integration |
+| Hour 20 | Final UI polish         |
+
+---
+
+# MEMBER 2 — BACKEND + DATABASE
+
+## Branch
+
+```bash
+feature/backend-core
+```
+
+## Responsibilities
+
+* FastAPI backend
+* MongoDB integration
+* Workflow APIs
+* Webhook endpoints
+* BackgroundTasks setup
+* Workflow state management
+* API response structures
+
+## Folder Access
+
+Allowed to modify:
+
+```text
+backend/routes/
+backend/database/
+backend/models/
+backend/main.py
+```
+
+---
+
+## Push Schedule
+
+| Time    | Push                  |
+| ------- | --------------------- |
+| Hour 2  | FastAPI skeleton      |
+| Hour 4  | MongoDB setup         |
+| Hour 6  | API routes            |
+| Hour 10 | Webhook integration   |
+| Hour 15 | BackgroundTasks       |
+| Hour 20 | Backend stabilization |
+
+---
+
+# MEMBER 3 — AI AGENTS + ORCHESTRATION
+
+## Branch
+
+```bash
+feature/ai-agents
+```
+
+## Responsibilities
+
+* CrewAI setup
+* Planner Agent
+* Research Agent
+* FactCheck Agent
+* Summary Agent
+* Article Agent
+* Social Post Agent
+* Agent orchestration workflow
+* Gemini API integration
+
+## Folder Access
+
+Allowed to modify:
+
+```text
+backend/agents/
+backend/services/ai/
+```
+
+Should avoid changing:
+
+```text
+backend/routes/
+```
+
+without discussing with Member 2.
+
+---
+
+## Push Schedule
+
+| Time    | Push                      |
+| ------- | ------------------------- |
+| Hour 3  | CrewAI setup              |
+| Hour 5  | Planner + Research agents |
+| Hour 8  | Summary + Article agents  |
+| Hour 12 | Full orchestration        |
+| Hour 18 | Prompt optimization       |
+
+---
+
+# MEMBER 4 — PUBLISHING + OMIUM
+
+## Branch
+
+```bash
+feature/publishing-omium
+```
+
+## Responsibilities
+
+* Telegram integration
+* Discord webhook integration
+* Reddit API integration
+* Omium SDK integration
+* Workflow tracing
+* Publishing status tracking
+* Retry/error handling
+
+## Folder Access
+
+Allowed to modify:
+
+```text
+backend/services/publishing/
+backend/traces/
+```
+
+Should avoid changing:
+
+```text
+backend/agents/
+```
+
+without coordination.
+
+---
+
+## Push Schedule
+
+| Time    | Push                  |
+| ------- | --------------------- |
+| Hour 4  | Telegram integration  |
+| Hour 7  | Discord integration   |
+| Hour 10 | Reddit integration    |
+| Hour 14 | Omium tracing         |
+| Hour 19 | Final publishing flow |
+
+---
+
+# Initial Repository Setup
+
+This should be done by:
+
+# Member 2 (Backend Lead)
+
+---
+
+## Initial Steps
+
+### 1. Create Repository
+
+```bash
+pulsewire-ai
+```
+
+---
+
+### 2. Create Main Branches
+
+```bash
+git checkout -b develop
+git push origin develop
+```
+
+---
+
+### 3. Add Initial Structure
+
+```text
+frontend/
+backend/
+docs/
+```
+
+---
+
+### 4. Push Initial Setup
+
+Push to:
+
+```bash
+feature/backend-core
+```
+
+Create PR → develop.
+
+---
+
+# How Each Member Should Start Work
+
+## Step 1
+
+Pull latest develop branch:
+
+```bash
+git checkout develop
+git pull origin develop
+```
+
+---
+
+## Step 2
+
+Create feature branch:
+
+```bash
+git checkout -b feature/your-branch-name
+```
+
+---
+
+## Step 3
+
+Push feature branch:
+
+```bash
+git push origin feature/your-branch-name
+```
+
+---
+
+# Standard Development Workflow
+
+## Before Starting Work
+
+Every member MUST run:
+
+```bash
+git checkout develop
+git pull origin develop
+```
+
+Then:
+
+```bash
+git checkout feature/your-branch
+```
+
+---
+
+# Before Every Push
+
+Run:
+
+```bash
+git checkout develop
+git pull origin develop
+
+git checkout feature/your-branch
+git merge develop
+```
+
+Resolve conflicts locally BEFORE pushing.
+
+---
+
+# Pushing Changes
+
+After work is completed:
+
+```bash
+git add .
+git commit -m "completed feature"
+git push origin feature/your-branch
+```
+
+---
+
+# Pull Request Workflow
+
+## Correct Flow
+
+```text
+feature branch
+      ↓
+Pull Request
+      ↓
+develop
+      ↓
+Final Testing
+      ↓
+main
+```
+
+---
+
+# Merge Responsibility
+
+| Merge Type        | Responsible Person |
+| ----------------- | ------------------ |
+| feature → develop | Team Lead          |
+| develop → main    | Team Lead          |
+
+---
+
+# Integration Order
+
+The project has dependencies.
+
+---
+
+# FIRST PRIORITY
+
+## Member 2 — Backend
+
+Must finish first:
+
+* FastAPI setup
+* API routes
+* MongoDB connection
+* Webhook endpoints
+
+Because:
+all other systems depend on backend APIs.
+
+---
+
+# SECOND PRIORITY
+
+## Member 3 — AI Agents
+
+Depends on:
+
+* backend APIs
+* database structure
+
+---
+
+# THIRD PRIORITY
+
+## Member 4 — Publishing + Omium
+
+Depends on:
+
+* generated content
+* backend APIs
+* workflow orchestration
+
+---
+
+# FOURTH PRIORITY
+
+## Member 1 — Frontend
+
+Can work independently initially using:
+
+* mock JSON data
+* placeholder APIs
+
+Then integrate real APIs later.
+
+---
+
+# Important Hackathon Rules
+
+## DO NOT WASTE TIME ON
+
+❌ complicated Git workflows
+❌ too many branches
+❌ authentication systems
+❌ advanced deployment optimization
+❌ unnecessary refactoring
+❌ microservices
+❌ Docker orchestration
+
+---
+
+# PRIORITIZE
+
+✅ autonomous workflow
+✅ AI agents
+✅ webhook trigger
+✅ real publishing
+✅ Omium tracing
+✅ polished demo
+✅ stable integration
+
+---
+
+# Final Merge Strategy
+
+At the end of the hackathon:
+
+## Step 1
+
+Freeze feature development.
+
+---
+
+## Step 2
+
+Merge all working features into:
+
+```text
+develop
+```
+
+---
+
+## Step 3
+
+Perform full testing.
+
+---
+
+## Step 4
+
+Once stable:
+
+```text
+develop → main
+```
+
+---
+
+# Final Demo Workflow
+
+```text
+Breaking news detected
+        ↓
+Webhook triggered
+        ↓
+Planner Agent starts workflow
+        ↓
+Research Agent gathers sources
+        ↓
+FactCheck Agent validates
+        ↓
+Article Agent generates article
+        ↓
+Social Agent generates posts
+        ↓
+Publishing Agent posts to:
+    - Telegram
+    - Discord
+    - Reddit
+        ↓
+Omium dashboard displays traces
+        ↓
+Frontend dashboard updates live
+```
+
+---
+
+# Final Notes
+
+The goal of this workflow is:
+
+* parallel development
+* minimal merge conflicts
+* fast integration
+* stable demo-ready execution
+* smooth collaboration under hackathon pressure
+
+Keep the workflow simple.
+Push frequently.
+Communicate constantly.
+Merge carefully.
+Prioritize demo stability over perfection.
