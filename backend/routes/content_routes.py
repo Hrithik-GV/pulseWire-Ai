@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from ..services.article_service import ArticleService
-from ..services.publishing_service import PublishingService
+from services.article_service import ArticleService
+from services.publishing_service import PublishingService
 from typing import List
 
 router = APIRouter()

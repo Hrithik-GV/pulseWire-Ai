@@ -1,6 +1,6 @@
 from datetime import datetime
-from ..models.schemas import Trace
-from ..database.mongodb import get_database
+from models.schemas import Trace
+from database.mongodb import get_database
 
 class TraceService:
     @staticmethod

@@ -1,10 +1,10 @@
 import asyncio
 from datetime import datetime
-from ..models.schemas import Workflow, Article
-from ..database.mongodb import get_database
-from .trace_service import TraceService
-from .article_service import ArticleService
-from .publishing_service import PublishingService
+from models.schemas import Workflow, Article
+from database.mongodb import get_database
+from services.trace_service import TraceService
+from services.article_service import ArticleService
+from services.publishing_service import PublishingService
 
 class WorkflowService:
     @staticmethod

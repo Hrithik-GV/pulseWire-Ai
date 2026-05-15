@@ -1,5 +1,5 @@
-from ..models.schemas import Post
-from ..database.mongodb import get_database
+from models.schemas import Post
+from database.mongodb import get_database
 from datetime import datetime
 
 class PublishingService:

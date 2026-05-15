@@ -2,8 +2,8 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from .database.mongodb import db
-from .routes import workflow_routes, content_routes
+from database.mongodb import db
+from routes import workflow_routes, content_routes
 
 load_dotenv()
 

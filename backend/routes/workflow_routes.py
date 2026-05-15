@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks, HTTPException
-from ..models.schemas import WebhookRequest, Workflow
-from ..services.workflow_service import WorkflowService
-from ..services.trace_service import TraceService
+from models.schemas import WebhookRequest, Workflow
+from services.workflow_service import WorkflowService
+from services.trace_service import TraceService
 from typing import List
 
 router = APIRouter()

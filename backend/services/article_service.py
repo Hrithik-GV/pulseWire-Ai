@@ -1,5 +1,5 @@
-from ..models.schemas import Article
-from ..database.mongodb import get_database
+from models.schemas import Article
+from database.mongodb import get_database
 
 class ArticleService:
     @staticmethod
