@@ -5,6 +5,9 @@ from database.mongodb import get_database
 from services.trace_service import TraceService
 from services.article_service import ArticleService
 from services.publishing_service import PublishingService
+from agents.source_verifier import SourceVerifier
+from agents.deep_researcher import DeepResearcher
+from agents.content_genie import ContentGenie
 
 class WorkflowService:
     @staticmethod
@@ -31,44 +34,47 @@ class WorkflowService:
         Orchestrates the multi-agent workflow asynchronously.
         """
         try:
-            # Step 1: Detection (Already done by webhook, but we log it)
+            # Step 1: Detection (Already done by webhook)
             await WorkflowService.update_status(workflow_id, "running", agent="NewsScanner", last_step="Detection confirmed", progress=10)
-            await TraceService.log_event(workflow_id, "NewsScanner", "DETECTION", "High-velocity signal detected.")
-            await asyncio.sleep(2)
+            await TraceService.log_event(workflow_id, "NewsScanner", "DETECTION", "Signal received and validated.")
+
+            # Context for agents
+            db = await get_database()
+            wf = await db["workflows"].find_one({"id": workflow_id})
+            context = {"title": wf["title"], "source": wf["source"], "url": wf["url"]}
 
             # Step 2: Source Verification
             await WorkflowService.update_status(workflow_id, "running", agent="SourceVerifier", last_step="Verifying sources", progress=30)
-            await TraceService.log_event(workflow_id, "SourceVerifier", "VERIFICATION", "Verifying 12 primary sources...")
-            await asyncio.sleep(3)
-            await TraceService.log_event(workflow_id, "SourceVerifier", "SUCCESS", "Sources verified with 98% confidence.")
+            verifier = SourceVerifier()
+            v_report = await verifier.execute(workflow_id, context)
+            context["verification"] = v_report
 
             # Step 3: Deep Research
             await WorkflowService.update_status(workflow_id, "running", agent="DeepResearcher", last_step="Performing deep research", progress=50)
-            await TraceService.log_event(workflow_id, "DeepResearcher", "RESEARCH", "Extracting key entities and context...")
-            await asyncio.sleep(4)
+            researcher = DeepResearcher()
+            r_report = await researcher.execute(workflow_id, context)
+            context["research"] = r_report["research_report"]
 
             # Step 4: Article Generation
             await WorkflowService.update_status(workflow_id, "running", agent="ContentGenie", last_step="Generating article", progress=75)
-            await TraceService.log_event(workflow_id, "ContentGenie", "GENERATION", "Drafting article based on research data.")
+            genie = ContentGenie()
+            content_report = await genie.execute(workflow_id, context)
             
-            # Create a mock article
-            db = await get_database()
-            wf = await db["workflows"].find_one({"id": workflow_id})
+            # Save the real AI generated article
             article = await ArticleService.create({
                 "workflow_id": workflow_id,
                 "title": wf["title"],
-                "summary": f"Autonomous report on {wf['title']} from {wf['source']}.",
-                "content": f"Full autonomous content for {wf['title']}. This intelligence briefing was generated automatically.",
-                "sources": [wf["source"], "Internal AI Research"]
+                "summary": f"Autonomous intelligence briefing on {wf['title']}.",
+                "content": content_report["content"],
+                "sources": [wf["source"], "AI Research"]
             })
-            await asyncio.sleep(3)
 
             # Step 5: Publishing
             await WorkflowService.update_status(workflow_id, "running", agent="PubMaster", last_step="Publishing to platforms", progress=90)
-            await TraceService.log_event(workflow_id, "PubMaster", "PUBLISHING", "Distributing to Telegram and Discord.")
+            await TraceService.log_event(workflow_id, "PubMaster", "PUBLISHING", "Distributing to social platforms.")
             
-            await PublishingService.publish_post(workflow_id, article.id, "telegram", f"New Alert: {wf['title']}", "@PulseWireTech")
-            await PublishingService.publish_post(workflow_id, article.id, "discord", f"New Alert: {wf['title']}", "Breaking News")
+            await PublishingService.publish_post(workflow_id, article.id, "telegram", f"🚨 BREAKING: {wf['title']}\nRead more: http://pulsewire.ai/article/{article.id}", "@PulseWireNews")
+            await PublishingService.publish_post(workflow_id, article.id, "discord", f"**NEWS ALERT**: {wf['title']}", "Breaking Feed")
             
             await asyncio.sleep(2)
 
